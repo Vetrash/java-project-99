@@ -1,5 +1,4 @@
-setup:
-	./gradlew build installDist
+
 build:
 	./gradlew build
 test:
@@ -11,9 +10,6 @@ report:
 	./gradlew test jacocoTestReport
 checkstyle:
 	./gradlew checkstyleMain checkstyleTest
-
-.PHONY: run-chekstyleTest
 run-chekstyleTest:
 	./gradlew checkstyleTest
 
-.PHONY: build test run-dist report checkstyle
