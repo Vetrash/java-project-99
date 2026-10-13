@@ -1,6 +1,6 @@
 plugins {
     java
-    application
+
     id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.sonarqube") version "7.3.1.8318"
@@ -15,10 +15,6 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
-}
-
-application {
-    mainClass.set("hexlet.code.AppApplication")
 }
 
 dependencyManagement {
@@ -66,9 +62,21 @@ sonar {
     }
 }
 
-
 checkstyle {
     toolVersion = "10.12.4"
     config = resources.text.fromFile("config/checkstyle/checkstyle.xml")
 }
 
+tasks.named<JacocoReport>("jacocoTestReport") {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}

@@ -1,5 +1,5 @@
 setup:
-	./gradlew build install
+	./gradlew build installDist
 build:
 	./gradlew build
 test:

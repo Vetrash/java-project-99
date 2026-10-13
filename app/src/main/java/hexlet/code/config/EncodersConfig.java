@@ -1,12 +1,7 @@
 package hexlet.code.config;
 
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-import hexlet.code.component.RsaKeyProperties;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,25 +11,27 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 @Configuration
 public class EncodersConfig {
 
-    private final RsaKeyProperties rsaKeys;
+    @Value("${jwt.secret}")
+    private String secret;
 
-    public EncodersConfig(RsaKeyProperties rsaKeys) {
-        this.rsaKeys = rsaKeys;
+    private SecretKey getSecretKey() {
+        return new SecretKeySpec(secret.getBytes(), "HmacSHA256");
     }
 
     @Bean
     JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(rsaKeys.getPublicKey()).build();
+        return NimbusJwtDecoder.withSecretKey(getSecretKey()).build();
     }
 
     @Bean
     JwtEncoder jwtEncoder() {
-        JWK jwk = new RSAKey.Builder(rsaKeys.getPublicKey()).privateKey(rsaKeys.getPrivateKey()).build();
-        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
+        return new NimbusJwtEncoder(new ImmutableSecret<>(getSecretKey()));
     }
 
     @Bean
