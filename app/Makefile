@@ -1,4 +1,5 @@
-
+setup:
+	./gradlew build
 build:
 	./gradlew build
 test:
