@@ -1,6 +1,9 @@
 # Менеджер задач (Java)
 
 [![hexlet-check](https://github.com/Vetrash/java-project-99/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/Vetrash/java-project-99/actions)
+[![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=Vetrash_java-project-99&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Vetrash_java-project-99)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Vetrash_java-project-99&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Vetrash_java-project-99)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=Vetrash_java-project-99&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=Vetrash_java-project-99)
 
 На практике узнаете про проектирование баз данных, связи между сущностями, PaaS, ORM, мониторинг ошибок, Swagger, фреймворк Spring.
 

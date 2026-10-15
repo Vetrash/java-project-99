@@ -1,5 +1,7 @@
 setup:
 	cd app && ./gradlew build
+start:
+	cd app && ./gradlew bootRun
 build:
 	cd app && ./gradlew build
 test:
