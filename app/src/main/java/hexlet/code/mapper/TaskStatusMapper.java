@@ -3,24 +3,20 @@ package hexlet.code.mapper;
 import hexlet.code.dto.TaskStatusCreateDTO;
 import hexlet.code.dto.TaskStatusDTO;
 import hexlet.code.dto.TaskStatusUpdateDTO;
-import hexlet.code.entity.TaskStatus;
+import hexlet.code.model.TaskStatus;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
-import org.mapstruct.ReportingPolicy;
 
-@Mapper(
-        uses = {JsonNullableMapper.class},
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedTargetPolicy = ReportingPolicy.IGNORE
-)
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface TaskStatusMapper {
 
-    TaskStatus map(TaskStatusCreateDTO dto);
+    TaskStatusDTO toDTO(TaskStatus taskStatus);
 
-    TaskStatusDTO map(TaskStatus model);
+    TaskStatus toEntity(TaskStatusCreateDTO dto);
 
-    void update(TaskStatusUpdateDTO dto, @MappingTarget TaskStatus model);
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    void updateEntity(TaskStatusUpdateDTO dto, @MappingTarget TaskStatus taskStatus);
 }

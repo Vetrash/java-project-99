@@ -3,7 +3,6 @@ package hexlet.code.service;
 import hexlet.code.dto.TaskStatusCreateDTO;
 import hexlet.code.dto.TaskStatusDTO;
 import hexlet.code.dto.TaskStatusUpdateDTO;
-import hexlet.code.entity.TaskStatus;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.repository.TaskStatusRepository;
@@ -22,44 +21,45 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     private final TaskStatusMapper taskStatusMapper;
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
+    public TaskStatusDTO createTaskStatus(TaskStatusCreateDTO taskStatusCreateDTO) {
+        var taskStatus = taskStatusMapper.toEntity(taskStatusCreateDTO);
+        var savedTaskStatus = taskStatusRepository.save(taskStatus);
+        return taskStatusMapper.toDTO(savedTaskStatus);
+    }
+
+    @Override
     public List<TaskStatusDTO> getAll() {
-        return taskStatusRepository.findAll().stream()
-                .map(taskStatusMapper::map)
+        var taskStatuses = taskStatusRepository.findAll();
+        return taskStatuses.stream()
+                .map(taskStatusMapper::toDTO)
                 .toList();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public TaskStatusDTO findById(Long id) {
-        return taskStatusMapper.map(find(id));
+    public TaskStatusDTO getById(Long id) {
+        var taskStatus = taskStatusRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task status not found!"));
+        return taskStatusMapper.toDTO(taskStatus);
     }
 
     @Override
     @Transactional
-    public TaskStatusDTO create(TaskStatusCreateDTO dto) {
-        var taskStatus = taskStatusMapper.map(dto);
-        taskStatusRepository.save(taskStatus);
-        return taskStatusMapper.map(taskStatus);
+    public TaskStatusDTO updateTaskStatus(TaskStatusUpdateDTO taskStatusUpdateDTO, Long id) {
+        var taskStatus = taskStatusRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task status not found!"));
+        taskStatusMapper.updateEntity(taskStatusUpdateDTO, taskStatus);
+        var savedTaskStatus = taskStatusRepository.save(taskStatus);
+        return taskStatusMapper.toDTO(savedTaskStatus);
     }
 
     @Override
     @Transactional
-    public TaskStatusDTO update(Long id, TaskStatusUpdateDTO dto) {
-        var taskStatus = find(id);
-        taskStatusMapper.update(dto, taskStatus);
-        taskStatusRepository.save(taskStatus);
-        return taskStatusMapper.map(taskStatus);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        taskStatusRepository.delete(find(id));
-    }
-
-    private TaskStatus find(Long id) {
-        return taskStatusRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task status with id " + id + " not found"));
+    public TaskStatusDTO deleteTaskStatus(Long id) {
+        var taskStatus = taskStatusRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task status not found!"));
+        var taskStatusDTO = taskStatusMapper.toDTO(taskStatus);
+        taskStatusRepository.delete(taskStatus);
+        return taskStatusDTO;
     }
 }

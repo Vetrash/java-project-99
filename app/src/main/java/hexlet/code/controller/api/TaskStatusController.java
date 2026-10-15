@@ -23,39 +23,38 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/task_statuses")
 @RequiredArgsConstructor
-public class TaskStatusesController {
+public class TaskStatusController {
 
     private final TaskStatusService taskStatusService;
 
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<TaskStatusDTO>> index() {
-        var statuses = taskStatusService.getAll();
+        var taskStatuses = taskStatusService.getAll();
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(statuses.size()))
-                .body(statuses);
+                .header("X-Total-Count", String.valueOf(taskStatuses.size()))
+                .body(taskStatuses);
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public TaskStatusDTO show(@PathVariable Long id) {
-        return taskStatusService.findById(id);
+        return taskStatusService.getById(id);
     }
 
-    @PostMapping
+    @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO dto) {
-        return taskStatusService.create(dto);
+    public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO taskStatusCreateDTO) {
+        return taskStatusService.createTaskStatus(taskStatusCreateDTO);
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public TaskStatusDTO update(@PathVariable Long id, @Valid @RequestBody TaskStatusUpdateDTO dto) {
-        return taskStatusService.update(id, dto);
+    public TaskStatusDTO update(@Valid @RequestBody TaskStatusUpdateDTO taskStatusUpdateDTO, @PathVariable Long id) {
+        return taskStatusService.updateTaskStatus(taskStatusUpdateDTO, id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void destroy(@PathVariable Long id) {
-        taskStatusService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        taskStatusService.deleteTaskStatus(id);
+        return ResponseEntity.noContent().build();
     }
 }

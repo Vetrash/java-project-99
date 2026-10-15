@@ -3,7 +3,6 @@ package hexlet.code.service;
 import hexlet.code.dto.LabelCreateDTO;
 import hexlet.code.dto.LabelDTO;
 import hexlet.code.dto.LabelUpdateDTO;
-import hexlet.code.entity.Label;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.LabelMapper;
 import hexlet.code.repository.LabelRepository;
@@ -22,44 +21,44 @@ public class LabelServiceImpl implements LabelService {
     private final LabelMapper labelMapper;
 
     @Override
-    @Transactional(readOnly = true)
-    public List<LabelDTO> getAll() {
-        return labelRepository.findAll().stream()
-                .map(labelMapper::map)
+    public List<LabelDTO> getAllLabels() {
+        var labels = labelRepository.findAll();
+        return labels.stream()
+                .map(labelMapper::toDTO)
                 .toList();
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public LabelDTO findById(Long id) {
-        return labelMapper.map(find(id));
+    public LabelDTO createLabel(LabelCreateDTO labelCreateDTO) {
+        var label = labelMapper.toEntity(labelCreateDTO);
+        var savedLabel = labelRepository.save(label);
+        return labelMapper.toDTO(savedLabel);
+    }
+
+    @Override
+    public LabelDTO getLabel(Long id) {
+        var label = labelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Label not found!"));
+        return labelMapper.toDTO(label);
+    }
+
+    @Override
+    public LabelDTO updateLabel(LabelUpdateDTO labelUpdateDTO, Long id) {
+        var label = labelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Label not found!"));
+        labelMapper.updateEntity(labelUpdateDTO, label);
+        var savedLabel = labelRepository.save(label);
+        return labelMapper.toDTO(savedLabel);
     }
 
     @Override
     @Transactional
-    public LabelDTO create(LabelCreateDTO dto) {
-        var label = labelMapper.map(dto);
-        labelRepository.save(label);
-        return labelMapper.map(label);
-    }
+    public LabelDTO deleteLabel(Long id) {
+        var label = labelRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Label not found!"));
 
-    @Override
-    @Transactional
-    public LabelDTO update(Long id, LabelUpdateDTO dto) {
-        var label = find(id);
-        labelMapper.update(dto, label);
-        labelRepository.save(label);
-        return labelMapper.map(label);
-    }
-
-    @Override
-    @Transactional
-    public void delete(Long id) {
-        labelRepository.delete(find(id));
-    }
-
-    private Label find(Long id) {
-        return labelRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Label with id " + id + " not found"));
+        var labelDTO = labelMapper.toDTO(label);
+        labelRepository.deleteById(id);
+        return labelDTO;
     }
 }

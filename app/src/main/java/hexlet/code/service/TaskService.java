@@ -8,14 +8,9 @@ import hexlet.code.dto.TaskUpdateDTO;
 import java.util.List;
 
 public interface TaskService {
-
-    List<TaskDTO> getAll(TaskParamsDTO params);
-
-    TaskDTO findById(Long id);
-
-    TaskDTO create(TaskCreateDTO dto);
-
-    TaskDTO update(Long id, TaskUpdateDTO dto);
-
-    void delete(Long id);
+    List<TaskDTO> getAllTasks(TaskParamsDTO params);
+    TaskDTO createTask(TaskCreateDTO taskCreateDTO);
+    TaskDTO getTaskById(Long id);
+    TaskDTO updateTask(TaskUpdateDTO taskUpdateDTO, Long id);
+    TaskDTO deleteTask(Long id);
 }
