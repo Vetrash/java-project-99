@@ -1,16 +1,16 @@
 setup:
-	./gradlew build
+	cd app && ./gradlew build
 build:
-	./gradlew build
+	cd app && ./gradlew build
 test:
-	./gradlew test
+	cd app &&  ./gradlew test
 run-dist:
-	./gradlew installDist
-	./build/install/app/bin/app
+	cd app && ./gradlew installDist
+	cd app && ./build/install/app/bin/app
 report:
-	./gradlew test jacocoTestReport
+	cd app && ./gradlew test jacocoTestReport
 checkstyle:
-	./gradlew checkstyleMain checkstyleTest
+	cd app && ./gradlew checkstyleMain checkstyleTest
 run-chekstyleTest:
-	./gradlew checkstyleTest
+	cd app && ./gradlew checkstyleTest
 
