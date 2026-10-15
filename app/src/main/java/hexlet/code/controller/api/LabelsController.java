@@ -23,38 +23,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/labels")
 @RequiredArgsConstructor
-public class LabelController {
+public class LabelsController {
 
     private final LabelService labelService;
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<LabelDTO>> index() {
-        var labels = labelService.getAllLabels();
+        var labels = labelService.getAll();
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(labels.size()))
                 .body(labels);
     }
 
-    @PostMapping("")
-    @ResponseStatus(HttpStatus.CREATED)
-    public LabelDTO createLabel(@Valid @RequestBody LabelCreateDTO labelCreateDTO) {
-        return labelService.createLabel(labelCreateDTO);
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public LabelDTO show(@PathVariable Long id) {
+        return labelService.findById(id);
     }
 
-    @GetMapping("/{id}")
-    public LabelDTO show(@PathVariable Long id) {
-        return labelService.getLabel(id);
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public LabelDTO create(@Valid @RequestBody LabelCreateDTO dto) {
+        return labelService.create(dto);
     }
 
     @PutMapping("/{id}")
-    public LabelDTO update(@Valid @RequestBody LabelUpdateDTO labelUpdateDTO, @PathVariable Long id) {
-        return labelService.updateLabel(labelUpdateDTO, id);
+    @ResponseStatus(HttpStatus.OK)
+    public LabelDTO update(@PathVariable Long id, @Valid @RequestBody LabelUpdateDTO dto) {
+        return labelService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        labelService.deleteLabel(id);
-        return ResponseEntity.noContent().build();
+    public void destroy(@PathVariable Long id) {
+        labelService.delete(id);
     }
 }

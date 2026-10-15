@@ -6,10 +6,19 @@ import hexlet.code.dto.UserUpdateDTO;
 
 import java.util.List;
 
+/**
+ * Контракт работы с пользователями. Контроллеры зависят от этого интерфейса,
+ * а не от конкретной реализации, так что реализацию можно заменить без правки контроллеров.
+ */
 public interface UserService {
+
     List<UserDTO> getAll();
-    UserDTO createUser(UserCreateDTO userCreateDTO);
-    UserDTO showUser(Long id);
-    UserDTO updateUser(UserUpdateDTO userUpdateDTO, Long id);
-    UserDTO deleteUser(Long id);
+
+    UserDTO findById(Long id);
+
+    UserDTO create(UserCreateDTO dto);
+
+    UserDTO update(Long id, UserUpdateDTO dto);
+
+    void delete(Long id);
 }

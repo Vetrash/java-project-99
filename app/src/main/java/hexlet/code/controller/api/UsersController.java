@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,20 +18,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.access.prepost.PreAuthorize;
-
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UsersController {
 
     private final UserService userService;
 
-    @GetMapping("")
-    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
     public ResponseEntity<List<UserDTO>> index() {
         var users = userService.getAll();
         return ResponseEntity.ok()
@@ -41,29 +39,26 @@ public class UserController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public UserDTO show(@PathVariable Long id) {
-        return userService.showUser(id);
+        return userService.findById(id);
     }
 
-    @PostMapping("")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO create(@Valid @RequestBody UserCreateDTO userCreateDTO) {
-
-        return userService.createUser(userCreateDTO);
+    public UserDTO create(@Valid @RequestBody UserCreateDTO dto) {
+        return userService.create(dto);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("@userUtils.isAuthor(#id)")
-    public UserDTO update(@Valid @RequestBody UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
-        return userService.updateUser(userUpdateDTO, id);
+    @PreAuthorize("@userUtils.isCurrentUser(#id)")
+    public UserDTO update(@PathVariable Long id, @Valid @RequestBody UserUpdateDTO dto) {
+        return userService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("@userUtils.isAuthor(#id)")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+    @PreAuthorize("@userUtils.isCurrentUser(#id)")
+    public void destroy(@PathVariable Long id) {
+        userService.delete(id);
     }
-
 }

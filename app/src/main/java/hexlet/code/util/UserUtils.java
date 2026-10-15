@@ -1,5 +1,6 @@
 package hexlet.code.util;
 
+import hexlet.code.entity.User;
 import hexlet.code.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,13 +12,16 @@ public class UserUtils {
 
     private final UserRepository userRepository;
 
-    public boolean isAuthor(Long id) {
+    public User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            return false;
+            return null;
         }
-        var email = authentication.getName();
-        var user = userRepository.findById(id).orElse(null);
-        return user != null && user.getEmail().equals(email);
+        return userRepository.findByEmail(authentication.getName()).orElse(null);
+    }
+
+    public boolean isCurrentUser(Long id) {
+        var user = getCurrentUser();
+        return user != null && user.getId().equals(id);
     }
 }

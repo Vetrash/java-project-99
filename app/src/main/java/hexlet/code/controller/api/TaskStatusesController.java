@@ -23,38 +23,39 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/task_statuses")
 @RequiredArgsConstructor
-public class TaskStatusController {
+public class TaskStatusesController {
 
     private final TaskStatusService taskStatusService;
 
-    @GetMapping("")
+    @GetMapping
     public ResponseEntity<List<TaskStatusDTO>> index() {
-        var taskStatuses = taskStatusService.getAll();
+        var statuses = taskStatusService.getAll();
         return ResponseEntity.ok()
-                .header("X-Total-Count", String.valueOf(taskStatuses.size()))
-                .body(taskStatuses);
+                .header("X-Total-Count", String.valueOf(statuses.size()))
+                .body(statuses);
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public TaskStatusDTO show(@PathVariable Long id) {
-        return taskStatusService.getById(id);
+        return taskStatusService.findById(id);
     }
 
-    @PostMapping("")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO taskStatusCreateDTO) {
-        return taskStatusService.createTaskStatus(taskStatusCreateDTO);
+    public TaskStatusDTO create(@Valid @RequestBody TaskStatusCreateDTO dto) {
+        return taskStatusService.create(dto);
     }
 
     @PutMapping("/{id}")
-    public TaskStatusDTO update(@Valid @RequestBody TaskStatusUpdateDTO taskStatusUpdateDTO, @PathVariable Long id) {
-        return taskStatusService.updateTaskStatus(taskStatusUpdateDTO, id);
+    @ResponseStatus(HttpStatus.OK)
+    public TaskStatusDTO update(@PathVariable Long id, @Valid @RequestBody TaskStatusUpdateDTO dto) {
+        return taskStatusService.update(id, dto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        taskStatusService.deleteTaskStatus(id);
-        return ResponseEntity.noContent().build();
+    public void destroy(@PathVariable Long id) {
+        taskStatusService.delete(id);
     }
 }

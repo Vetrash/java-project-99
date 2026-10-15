@@ -7,9 +7,14 @@ import hexlet.code.dto.TaskStatusUpdateDTO;
 import java.util.List;
 
 public interface TaskStatusService {
-    TaskStatusDTO createTaskStatus(TaskStatusCreateDTO taskStatusCreateDTO);
+
     List<TaskStatusDTO> getAll();
-    TaskStatusDTO updateTaskStatus(TaskStatusUpdateDTO taskStatusUpdateDTO, Long id);
-    TaskStatusDTO getById(Long id);
-    TaskStatusDTO deleteTaskStatus(Long id);
+
+    TaskStatusDTO findById(Long id);
+
+    TaskStatusDTO create(TaskStatusCreateDTO dto);
+
+    TaskStatusDTO update(Long id, TaskStatusUpdateDTO dto);
+
+    void delete(Long id);
 }

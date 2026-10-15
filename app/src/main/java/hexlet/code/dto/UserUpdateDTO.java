@@ -1,20 +1,32 @@
 package hexlet.code.dto;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.jackson.nullable.JsonNullable;
 
-@Setter
+/**
+ * Ограничения проверяются для значения внутри JsonNullable: экстрактор поставляется
+ * самой библиотекой jackson-databind-nullable и подхватывается автоматически при старте.
+ * Если поле не пришло в запросе, оно не валидируется и не обновляется.
+ */
 @Getter
+@Setter
 public class UserUpdateDTO {
+
+    private static final int MIN_PASSWORD_LENGTH = 3;
+
     private JsonNullable<String> firstName;
 
     private JsonNullable<String> lastName;
 
     @Email
-    private String email;
-    @Size(min = 3)
-    private String password;
+    @NotBlank
+    private JsonNullable<String> email;
+
+    @NotBlank
+    @Size(min = MIN_PASSWORD_LENGTH)
+    private JsonNullable<String> password;
 }

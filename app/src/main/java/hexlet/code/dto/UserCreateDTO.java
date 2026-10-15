@@ -6,10 +6,14 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 public class UserCreateDTO {
+
+    private static final int MIN_PASSWORD_LENGTH = 3;
+
     private String firstName;
+
     private String lastName;
 
     @NotBlank
@@ -17,6 +21,6 @@ public class UserCreateDTO {
     private String email;
 
     @NotBlank
-    @Size(min = 3)
+    @Size(min = MIN_PASSWORD_LENGTH)
     private String password;
 }

@@ -3,6 +3,7 @@ package hexlet.code.service;
 import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
+import hexlet.code.entity.User;
 import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.UserMapper;
 import hexlet.code.repository.UserRepository;
@@ -18,67 +19,57 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    private final UserMapper userMapper;
-
     @Override
+    @Transactional(readOnly = true)
     public List<UserDTO> getAll() {
-        var users = userRepository.findAll();
-        return users.stream()
-                .map(userMapper::toDTO)
+        return userRepository.findAll().stream()
+                .map(userMapper::map)
                 .toList();
     }
 
     @Override
-    @Transactional
-    public UserDTO createUser(UserCreateDTO userCreateDTO) {
-        var user = userMapper.toEntity(userCreateDTO);
-        user.setPasswordDigest(
-                passwordEncoder.encode(userCreateDTO.getPassword())
-        );
-
-        var savedUser = userRepository.save(user);
-        return userMapper.toDTO(savedUser);
-    }
-
-    @Override
-    public UserDTO showUser(Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-        return userMapper.toDTO(user);
+    @Transactional(readOnly = true)
+    public UserDTO findById(Long id) {
+        return userMapper.map(find(id));
     }
 
     @Override
     @Transactional
-    public UserDTO updateUser(UserUpdateDTO userUpdateDTO, Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-        userMapper.updateEntity(userUpdateDTO, user);
-
-        if (userUpdateDTO.getFirstName() != null) {
-            user.setFirstName(userUpdateDTO.getFirstName().orElse(null));
-        }
-        if (userUpdateDTO.getLastName() != null) {
-            user.setLastName(userUpdateDTO.getLastName().orElse(null));
-        }
-
-        if (userUpdateDTO.getPassword() != null) {
-            user.setPasswordDigest(passwordEncoder.encode(userUpdateDTO.getPassword()));
-        }
-
-        var savedUser = userRepository.save(user);
-        return userMapper.toDTO(savedUser);
+    public UserDTO create(UserCreateDTO dto) {
+        var user = userMapper.map(dto);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        userRepository.save(user);
+        return userMapper.map(user);
     }
 
     @Override
     @Transactional
-    public UserDTO deleteUser(Long id) {
-        var user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
-        var userDTO = userMapper.toDTO(user);
-        userRepository.delete(user);
-        return userDTO;
+    public UserDTO update(Long id, UserUpdateDTO dto) {
+        var user = find(id);
+        var newPassword = dto.getPassword();
+
+        userMapper.update(dto, user);
+
+        // маппер кладёт пароль как есть, в базе он должен храниться зашифрованным
+        if (newPassword != null && newPassword.isPresent()) {
+            user.setPassword(passwordEncoder.encode(newPassword.get()));
+        }
+
+        userRepository.save(user);
+        return userMapper.map(user);
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        userRepository.delete(find(id));
+    }
+
+    private User find(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + " not found"));
     }
 }

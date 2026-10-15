@@ -7,9 +7,14 @@ import hexlet.code.dto.LabelUpdateDTO;
 import java.util.List;
 
 public interface LabelService {
-    List<LabelDTO> getAllLabels();
-    LabelDTO createLabel(LabelCreateDTO labelCreateDTO);
-    LabelDTO getLabel(Long id);
-    LabelDTO updateLabel(LabelUpdateDTO labelUpdateDTO, Long id);
-    LabelDTO deleteLabel(Long id);
+
+    List<LabelDTO> getAll();
+
+    LabelDTO findById(Long id);
+
+    LabelDTO create(LabelCreateDTO dto);
+
+    LabelDTO update(Long id, LabelUpdateDTO dto);
+
+    void delete(Long id);
 }
