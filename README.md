@@ -10,6 +10,8 @@
 Учебный проект Хекслета: https://ru.hexlet.io/programs/java
 Как это должно работать: https://files.hexlet.app/a/xg6yxv
 
+DEMO: https://java-project-99-jubt.onrender.com
+
 ## Стек
 
 - Java
