@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN chmod +x gradlew
+RUN chmod +x ./app/gradlew
 
 RUN ./app/gradlew bootJar --no-daemon -x test
 
