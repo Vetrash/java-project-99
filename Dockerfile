@@ -6,7 +6,7 @@ COPY . .
 
 RUN chmod +x gradlew
 
-RUN ./aap/gradlew bootJar --no-daemon -x test
+RUN ./app/gradlew bootJar --no-daemon -x test
 
 FROM eclipse-temurin:21-jre-alpine
 
