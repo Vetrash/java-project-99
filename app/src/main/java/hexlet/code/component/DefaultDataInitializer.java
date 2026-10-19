@@ -17,15 +17,20 @@ public class DefaultDataInitializer {
     private final PasswordEncoder passwordEncoder;
     private final TaskStatusRepository taskStatusRepository;
     private final LabelRepository labelRepository;
+    private final TaskRepository taskRepository;
 
-    public DefaultDataInitializer(
+    public DataInitializer(
+
             UserRepository userRepository, PasswordEncoder passwordEncoder,
-            TaskStatusRepository taskStatusRepository, LabelRepository labelRepository) {
+            TaskStatusRepository taskStatusRepository, LabelRepository labelRepository,
+            TaskRepository taskRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.taskStatusRepository = taskStatusRepository;
         this.labelRepository = labelRepository;
+        this.taskRepository = taskRepository;
     }
+
 
     @PostConstruct
     public void init() {
@@ -80,6 +85,24 @@ public class DefaultDataInitializer {
             Label label = new Label();
             label.setName("bug");
             labelRepository.save(label);
+        }
+        if (taskRepository.count() == 0) {
+            User admin = userRepository.findByEmail("hexlet@example.com").orElseThrow();
+            TaskStatus draft = taskStatusRepository.findBySlug("draft").orElseThrow();
+
+            Task task = new Task();
+            task.setTitle("First task");
+            task.setContent("Demo task created on startup");
+            task.setIndex(taskRepository.getMaxIndex() + 1);
+            task.setTaskStatus(draft);
+            task.setAssignee(admin);
+
+            Set<Label> labels = new HashSet<>();
+            labelRepository.findByName("feature").ifPresent(labels::add);
+            labelRepository.findByName("bug").ifPresent(labels::add);
+            task.setLabels(labels);
+
+            taskRepository.save(task);
         }
     }
 }
