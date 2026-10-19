@@ -12,7 +12,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
-        //uses = JsonNullableMapper.class,
+        uses = JsonNullableMapper.class,
         componentModel = MappingConstants.ComponentModel.SPRING,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
@@ -31,5 +31,7 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "passwordDigest", ignore = true)
+    @Mapping(target = "firstName", source = "firstName", qualifiedByName = "unwrap")
+    @Mapping(target = "lastName", source = "lastName", qualifiedByName = "unwrap")
     void updateEntity(UserUpdateDTO dto, @MappingTarget User user);
 }

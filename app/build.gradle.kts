@@ -45,7 +45,7 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.6.3")
 
 
-    implementation("org.openapitools:jackson-databind-nullable:0.2.10")
+    implementation("org.openapitools:jackson-databind-nullable:0.2.12")
 
     implementation("io.sentry:sentry-spring-boot-4:8.49.0")
 

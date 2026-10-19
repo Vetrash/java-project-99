@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper(
-        //uses = JsonNullableMapper.class,
+        uses = JsonNullableMapper.class,
         componentModel = MappingConstants.ComponentModel.SPRING,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
@@ -41,6 +41,8 @@ public interface TaskMapper {
     @Mapping(target = "assignee", ignore = true)
     @Mapping(target = "taskStatus", ignore = true)
     @Mapping(target = "labels", ignore = true)
+    @Mapping(target = "index", source = "index", qualifiedByName = "unwrap")
+    @Mapping(target = "content", source = "content", qualifiedByName = "unwrap")
     void updateEntity(TaskUpdateDTO dto, @MappingTarget Task task);
 
     @Named("labelsToIds")
