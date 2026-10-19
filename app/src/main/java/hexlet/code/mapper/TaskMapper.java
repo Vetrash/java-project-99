@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 @Mapper(
-        uses = JsonNullableMapper.class,
+        //uses = JsonNullableMapper.class,
         componentModel = MappingConstants.ComponentModel.SPRING,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE
