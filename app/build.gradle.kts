@@ -79,6 +79,10 @@ tasks.test {
     finalizedBy(tasks.jacocoTestReport)
 }
 
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-Amapstruct.verbose=true")
+}
+
 application {
     mainClass = "hexlet.code.AppApplication"
 }
