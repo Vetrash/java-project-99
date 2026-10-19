@@ -1,5 +1,4 @@
 plugins {
-    java
     application
     id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
@@ -50,7 +49,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("net.javacrumbs.json-unit:json-unit-assertj:3.2.2")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testAnnotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
     testAnnotationProcessor("org.projectlombok:lombok-mapstruct-binding:0.2.0")
 }
