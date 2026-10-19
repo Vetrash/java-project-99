@@ -23,10 +23,11 @@ public class DefaultDataInitializer {
     private final LabelRepository labelRepository;
     private final TaskRepository taskRepository;
 
-    public DefaultDataInitializer (
-
-            UserRepository userRepository, PasswordEncoder passwordEncoder,
-            TaskStatusRepository taskStatusRepository, LabelRepository labelRepository,
+    public DefaultDataInitializer(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            TaskStatusRepository taskStatusRepository,
+            LabelRepository labelRepository,
             TaskRepository taskRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
