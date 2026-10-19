@@ -6,9 +6,13 @@ import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.repository.TaskRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import hexlet.code.model.Task;
+import java.util.Set;
+import java.util.HashSet;
 
 @Component
 public class DefaultDataInitializer {
@@ -19,7 +23,7 @@ public class DefaultDataInitializer {
     private final LabelRepository labelRepository;
     private final TaskRepository taskRepository;
 
-    public DataInitializer(
+    public DefaultDataInitializer (
 
             UserRepository userRepository, PasswordEncoder passwordEncoder,
             TaskStatusRepository taskStatusRepository, LabelRepository labelRepository,
