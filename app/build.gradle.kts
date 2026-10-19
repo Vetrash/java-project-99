@@ -45,7 +45,11 @@ dependencies {
     implementation("org.mapstruct:mapstruct:1.6.3")
 
 
-    implementation("org.openapitools:jackson-databind-nullable:0.2.10")
+    implementation("org.openapitools:jackson-databind-nullable:0.2.10") {
+        exclude(group = "com.fasterxml.jackson.core")
+        exclude(group = "com.fasterxml.jackson.dataformat")
+        exclude(group = "com.fasterxml.jackson.datatype")
+    }
 
 
     implementation("io.sentry:sentry-spring-boot-4:8.49.0")
