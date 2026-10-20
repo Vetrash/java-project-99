@@ -7,8 +7,10 @@ import hexlet.code.exception.ResourceNotFoundException;
 import hexlet.code.mapper.TaskStatusMapper;
 import hexlet.code.repository.TaskStatusRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -17,7 +19,6 @@ import java.util.List;
 public class TaskStatusServiceImpl implements TaskStatusService {
 
     private final TaskStatusRepository taskStatusRepository;
-
     private final TaskStatusMapper taskStatusMapper;
 
     @Override
@@ -48,7 +49,23 @@ public class TaskStatusServiceImpl implements TaskStatusService {
     public TaskStatusDTO updateTaskStatus(TaskStatusUpdateDTO taskStatusUpdateDTO, Long id) {
         var taskStatus = taskStatusRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task status not found!"));
-        taskStatusMapper.updateEntity(taskStatusUpdateDTO, taskStatus);
+
+        if (taskStatusUpdateDTO.getName().isPresent()) {
+            var name = taskStatusUpdateDTO.getName().orElse(null);
+            if (name == null || name.isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Name cannot be blank");
+            }
+            taskStatus.setName(name);
+        }
+
+        if (taskStatusUpdateDTO.getSlug().isPresent()) {
+            var slug = taskStatusUpdateDTO.getSlug().orElse(null);
+            if (slug == null || slug.isBlank()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Slug cannot be blank");
+            }
+            taskStatus.setSlug(slug);
+        }
+
         var savedTaskStatus = taskStatusRepository.save(taskStatus);
         return taskStatusMapper.toDTO(savedTaskStatus);
     }

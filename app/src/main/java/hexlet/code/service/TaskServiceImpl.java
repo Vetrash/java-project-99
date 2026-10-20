@@ -12,8 +12,10 @@ import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import hexlet.code.specification.TaskSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -80,17 +82,19 @@ public class TaskServiceImpl implements TaskService {
         var task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found!"));
 
-        taskMapper.updateEntity(dto, task);
-
-        if (dto.getIndex() != null) {
+        // title, content, index — обновляем вручную через isPresent()
+        if (dto.getTitle().isPresent()) {
+            task.setTitle(dto.getTitle().orElse(null));
+        }
+        if (dto.getContent().isPresent()) {
+            task.setContent(dto.getContent().orElse(null));
+        }
+        if (dto.getIndex().isPresent()) {
             task.setIndex(dto.getIndex().orElse(null));
         }
 
-        if (dto.getContent() != null) {
-            task.setContent(dto.getContent().orElse(null));
-        }
-
-        if (dto.getAssigneeId() != null) {
+        // assignee — из репозитория
+        if (dto.getAssigneeId().isPresent()) {
             var newAssigneeId = dto.getAssigneeId().orElse(null);
             if (newAssigneeId != null) {
                 task.setAssignee(userRepository.findById(newAssigneeId)
@@ -100,18 +104,24 @@ public class TaskServiceImpl implements TaskService {
             }
         }
 
-        if (dto.getStatus() != null) {
-            task.setTaskStatus(taskStatusRepository.findBySlug(dto.getStatus())
+        // status — из репозитория
+        if (dto.getStatus().isPresent()) {
+            var slug = dto.getStatus().orElse(null);
+            if (slug == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Status cannot be null");
+            }
+            task.setTaskStatus(taskStatusRepository.findBySlug(slug)
                     .orElseThrow(() -> new ResourceNotFoundException("Task status not found!")));
         }
 
-        var taskLabelIds = dto.getTaskLabelIds();
-        if (taskLabelIds != null) {
-            if (taskLabelIds.isEmpty()) {
+        // labels — из репозитория
+        if (dto.getTaskLabelIds().isPresent()) {
+            var ids = dto.getTaskLabelIds().orElse(null);
+            if (ids == null || ids.isEmpty()) {
                 task.setLabels(new HashSet<>());
             } else {
-                var labels = labelRepository.findAllById(taskLabelIds);
-                if (labels.size() != taskLabelIds.size()) {
+                var labels = labelRepository.findAllById(ids);
+                if (labels.size() != ids.size()) {
                     throw new ResourceNotFoundException("One or more labels not found!");
                 }
                 task.setLabels(new HashSet<>(labels));

@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -55,23 +56,17 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(UserUpdateDTO userUpdateDTO, Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
         userMapper.updateEntity(userUpdateDTO, user);
 
-        if (userUpdateDTO.getFirstName() != null) {
-            user.setFirstName(userUpdateDTO.getFirstName().orElse(null));
-        }
-        if (userUpdateDTO.getLastName() != null) {
-            user.setLastName(userUpdateDTO.getLastName().orElse(null));
-        }
-
-        if (userUpdateDTO.getPassword() != null) {
+        if (userUpdateDTO.getPassword() != null && !userUpdateDTO.getPassword().isBlank()) {
             user.setPasswordDigest(passwordEncoder.encode(userUpdateDTO.getPassword()));
         }
 
+        user.setUpdatedAt(LocalDate.now());
         var savedUser = userRepository.save(user);
         return userMapper.toDTO(savedUser);
     }
-
     @Override
     @Transactional
     public UserDTO deleteUser(Long id) {

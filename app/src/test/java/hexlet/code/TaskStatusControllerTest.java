@@ -9,6 +9,7 @@ import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.boot.test.context.SpringBootTest;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -119,7 +120,7 @@ class TaskStatusControllerTest {
         var savedTaskStatus = taskStatusRepository.save(status);
 
         var payload = new TaskStatusUpdateDTO();
-        payload.setName("Updated");
+        payload.setName(JsonNullable.of("Updated"));
 
         var result = mockMvc.perform(put("/api/task_statuses/" + savedTaskStatus.getId())
                         .contentType(MediaType.APPLICATION_JSON)

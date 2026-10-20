@@ -8,12 +8,11 @@ import hexlet.code.model.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
 
 import java.util.List;
 import java.util.Set;
 
-@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+@Mapper(componentModel = "spring", uses = JsonNullableMapper.class)
 public interface TaskMapper {
 
     @Mapping(source = "assignee.id", target = "assigneeId")
@@ -30,8 +29,9 @@ public interface TaskMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    @Mapping(target = "index", ignore = true)
+    @Mapping(target = "title", ignore = true)
     @Mapping(target = "content", ignore = true)
+    @Mapping(target = "index", ignore = true)
     @Mapping(target = "assignee", ignore = true)
     @Mapping(target = "taskStatus", ignore = true)
     @Mapping(target = "labels", ignore = true)

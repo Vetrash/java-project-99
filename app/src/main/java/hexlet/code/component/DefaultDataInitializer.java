@@ -1,14 +1,19 @@
 package hexlet.code.component;
 
 import hexlet.code.model.Label;
+import hexlet.code.model.Task;
 import hexlet.code.model.TaskStatus;
 import hexlet.code.model.User;
 import hexlet.code.repository.LabelRepository;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class DefaultDataInitializer {
@@ -17,14 +22,19 @@ public class DefaultDataInitializer {
     private final PasswordEncoder passwordEncoder;
     private final TaskStatusRepository taskStatusRepository;
     private final LabelRepository labelRepository;
+    private final TaskRepository taskRepository;
 
     public DefaultDataInitializer(
-            UserRepository userRepository, PasswordEncoder passwordEncoder,
-            TaskStatusRepository taskStatusRepository, LabelRepository labelRepository) {
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            TaskStatusRepository taskStatusRepository,
+            LabelRepository labelRepository,
+            TaskRepository taskRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.taskStatusRepository = taskStatusRepository;
         this.labelRepository = labelRepository;
+        this.taskRepository = taskRepository;
     }
 
     @PostConstruct
@@ -80,6 +90,27 @@ public class DefaultDataInitializer {
             Label label = new Label();
             label.setName("bug");
             labelRepository.save(label);
+        }
+
+        if (taskRepository.count() == 0) {
+            var draft = taskStatusRepository.findBySlug("draft").orElseThrow();
+            var feature = labelRepository.findByName("feature").orElse(null);
+            var admin = userRepository.findByEmail("hexlet@example.com").orElse(null);
+
+            Task task = new Task();
+            task.setTitle("Sample task");
+            task.setContent("This is a sample task created on startup");
+            task.setIndex(taskRepository.getMaxIndex() + 1);
+            task.setTaskStatus(draft);
+            task.setAssignee(admin);
+
+            Set<Label> labels = new HashSet<>();
+            if (feature != null) {
+                labels.add(feature);
+            }
+            task.setLabels(labels);
+
+            taskRepository.save(task);
         }
     }
 }
