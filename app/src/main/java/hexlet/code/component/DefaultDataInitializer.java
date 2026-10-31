@@ -62,13 +62,13 @@ public class DefaultDataInitializer {
 
         if (taskStatusRepository.findBySlug("to_be_fixed").isEmpty()) {
             TaskStatus defaultStatus3 = new TaskStatus();
-            defaultStatus3.setName("To be fixed");
+            defaultStatus3.setName("ToBeFixed");
             defaultStatus3.setSlug("to_be_fixed");
             taskStatusRepository.save(defaultStatus3);
         }
         if (taskStatusRepository.findBySlug("to_publish").isEmpty()) {
             TaskStatus defaultStatus4 = new TaskStatus();
-            defaultStatus4.setName("To publish");
+            defaultStatus4.setName("ToPublish");
             defaultStatus4.setSlug("to_publish");
             taskStatusRepository.save(defaultStatus4);
         }
