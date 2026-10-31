@@ -55,7 +55,7 @@ public class DefaultDataInitializer {
 
         if (taskStatusRepository.findBySlug("to_review").isEmpty()) {
             TaskStatus defaultStatus2 = new TaskStatus();
-            defaultStatus2.setName("To review");
+            defaultStatus2.setName("ToReview");
             defaultStatus2.setSlug("to_review");
             taskStatusRepository.save(defaultStatus2);
         }
