@@ -1,5 +1,6 @@
 package hexlet.code.dto;
 
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -7,5 +8,7 @@ import org.openapitools.jackson.nullable.JsonNullable;
 @Setter
 @Getter
 public class LabelUpdateDTO {
+
+    @Size(min = 3, max = 1000, message = "Name must be between 3 and 1000 characters")
     private JsonNullable<String> name = JsonNullable.undefined();
 }

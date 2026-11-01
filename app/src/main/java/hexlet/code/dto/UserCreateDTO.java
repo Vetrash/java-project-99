@@ -9,14 +9,21 @@ import lombok.Setter;
 @Setter
 @Getter
 public class UserCreateDTO {
+
+    @NotBlank(message = "must not be blank")
+    @Size(max = 255, message = "First name must not exceed 255 characters")
     private String firstName;
+
+    @NotBlank(message = "must not be blank")
+    @Size(max = 255, message = "Last name must not exceed 255 characters")
     private String lastName;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "must not be blank")
+    @Email(message = "Email must be a valid email address")
+    @Size(max = 255, message = "Email must not exceed 255 characters")
     private String email;
 
-    @NotBlank
-    @Size(min = 3)
+    @NotBlank(message = "must not be blank")
+    @Size(min = 8, max = 255, message = "Password must be between 8 and 255 characters")
     private String password;
 }

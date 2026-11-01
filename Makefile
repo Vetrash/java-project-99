@@ -4,6 +4,8 @@ start:
 	cd app && ./gradlew bootRun
 build:
 	cd app && ./gradlew build
+
+.PHONY: build
 test:
 	cd app &&  ./gradlew test
 run-dist:

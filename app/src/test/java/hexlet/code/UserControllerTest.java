@@ -45,7 +45,8 @@ class UserControllerTest {
         userRepository.deleteAll();
     }
 
-    private final Faker faker = new Faker();
+    @Autowired
+    private Faker faker;
 
     @Test
     void testIndexUsers() throws Exception {

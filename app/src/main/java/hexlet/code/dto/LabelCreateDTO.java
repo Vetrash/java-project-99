@@ -1,3 +1,4 @@
+
 package hexlet.code.dto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -8,7 +9,9 @@ import lombok.Setter;
 @Setter
 @Getter
 public class LabelCreateDTO {
-    @NotBlank
-    @Size(min = 3, max = 1000)
+
+    @NotBlank(message = "must not be blank")
+    @Size(min = 3, max = 1000, message = "Name must be between 3 and 1000 characters")
     private String name;
 }
+

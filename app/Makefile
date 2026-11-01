@@ -2,6 +2,8 @@ setup:
 	./gradlew build
 build:
 	./gradlew build
+
+.PHONY: build
 test:
 	./gradlew test
 run-dist:
